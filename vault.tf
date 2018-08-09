@@ -8,7 +8,7 @@ data "template_file" "credentials" {
 }
 
 resource "vault_generic_secret" "credentials" {
-  path      = "${var.service_name}/credentials/database/${var.db_name}"
+  path      = "${var.service_name}/secrets/credentials/database/${var.db_name}"
   data_json = "${data.template_file.credentials.rendered}"
 }
 
