@@ -1,7 +1,6 @@
 resource "aws_security_group" "db" {
   name        = "allow_all"
   description = "Allow all inbound traffic"
-  vpc_id      = "${aws_vpc.main.id}"
 
   ingress {
     from_port   = 3306
