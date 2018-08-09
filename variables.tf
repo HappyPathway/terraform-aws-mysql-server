@@ -9,3 +9,7 @@ variable "max_ttl" {
 variable "default_ttl" {
   default = "30"
 }
+
+variable "source_cidr" {
+  default = "0.0.0.0/0"
+}
