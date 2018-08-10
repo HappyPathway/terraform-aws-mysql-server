@@ -60,44 +60,44 @@ resource "vault_database_secret_backend_role" "mysql_ro" {
 
 # CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';
 
-data "template_file" "mysql_ro" {
-  template = "${file("${path.module}/vault_policy_templates/mysql_ro.hcl.tpl")}"
+#data "template_file" "mysql_ro" {
+#  template = "${file("${path.module}/vault_policy_templates/mysql_ro.hcl.tpl")}"
+#
+#  vars {
+#    db_name = "${var.db_name}"
+#    service_name = "${var.service_name}"
+#  }
+#}
 
-  vars {
-    db_name = "${var.db_name}"
-    service_name = "${var.service_name}"
-  }
-}
+#resource "vault_policy" "mysql_ro" {
+#  name   = "${var.service_name}-${var.db_name}-mysql_ro"
+#  policy = "${data.template_file.mysql_ro.rendered}"
+#}
 
-resource "vault_policy" "mysql_ro" {
-  name   = "${var.service_name}-${var.db_name}-mysql_ro"
-  policy = "${data.template_file.mysql_ro.rendered}"
-}
+#data "template_file" "mysql_crud" {
+#  template = "${file("${path.module}/vault_policy_templates/mysql_crud.hcl.tpl")}"
 
-data "template_file" "mysql_crud" {
-  template = "${file("${path.module}/vault_policy_templates/mysql_crud.hcl.tpl")}"
+#  vars {
+#    db_name = "${var.db_name}"
+#    service_name = "${var.service_name}"
+#  }
+#}
 
-  vars {
-    db_name = "${var.db_name}"
-    service_name = "${var.service_name}"
-  }
-}
+#resource "vault_policy" "mysql_crud" {
+#  name   = "${var.service_name}-${var.db_name}-mysql_crud"
+#  policy = "${data.template_file.mysql_crud.rendered}"
+#}
 
-resource "vault_policy" "mysql_crud" {
-  name   = "${var.service_name}-${var.db_name}-mysql_crud"
-  policy = "${data.template_file.mysql_crud.rendered}"
-}
+#data "template_file" "db_credentials" {
+#  template = "${file("${path.module}/vault_policy_templates/db_credentials.tpl")}"
 
-data "template_file" "db_credentials" {
-  template = "${file("${path.module}/vault_policy_templates/db_credentials.tpl")}"
+#  vars {
+#    service_name = "${var.service_name}"
+#    db_name = "${var.db_name}"
+#  }
+#}
 
-  vars {
-    service_name = "${var.service_name}"
-    db_name = "${var.db_name}"
-  }
-}
-
-resource "vault_policy" "db_credentials" {
-  name = "${var.service_name}-${var.db_name}-credentials"
-  policy = "${data.template_file.mysql_crud.rendered}"
-}
+#resource "vault_policy" "db_credentials" {
+#  name = "${var.service_name}-${var.db_name}-credentials"
+#  policy = "${data.template_file.mysql_crud.rendered}"
+#}
