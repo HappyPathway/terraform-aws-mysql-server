@@ -14,7 +14,7 @@ resource "aws_db_instance" "default" {
 }
 
 data "template_file" "credentials" {
-  template = "${file("${path.module}/templates/vault_credentials.json.tpl")}"
+  template = "${file("${path.module}/vault_policy_templates/vault_credentials.json.tpl")}"
 
   vars {
     username = "${random_string.username.result}"
