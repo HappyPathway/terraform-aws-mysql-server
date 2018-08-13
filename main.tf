@@ -12,3 +12,17 @@ resource "aws_db_instance" "default" {
   vpc_security_group_ids = ["${aws_security_group.db.id}"]
   skip_final_snapshot = true
 }
+
+data "template_file" "credentials" {
+  template = "${file("${path.module}/templates/vault_credentials.json.tpl")}"
+
+  vars {
+    username = "${random_string.username.result}"
+    password = "${random_string.password.result}"
+  }
+}
+
+resource "vault_generic_secret" "credentials" {
+  path      = "${var.service_name}/secrets/credentials/database/${var.db_name}"
+  data_json = "${data.template_file.credentials.rendered}"
+}
