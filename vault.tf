@@ -1,3 +1,12 @@
+locals {
+  db = {
+    "user" = "${random_string.username.result}"
+    "passwd" = "${random_string.password.result}"
+    "host" = "${aws_db_instance.default.endpoint}"
+    "db" = "${var.db_name}"
+    }
+}
+
 resource "vault_mount" "db" {
   path                      = "${var.service_name}/db-${var.db_name}"
   type                      = "database"
@@ -11,7 +20,7 @@ resource "vault_database_secret_backend_connection" "mysql" {
   allowed_roles = ["mysql_crud", "mysql_ro"]
 
   mysql {
-    connection_url = "${random_string.username.result}:${random_string.password.result}@tcp(${aws_db_instance.default.endpoint})/${var.db_name}"
+    connection_url = "${local.db.user}:${local.db.passwd}@tcp(${local.db.host})/${local.db.db}"
   }
 }
 
@@ -19,7 +28,7 @@ resource "vault_database_secret_backend_role" "mysql_crud" {
   backend             = "${vault_mount.db.path}"
   name                = "mysql_crud"
   db_name             = "${var.db_name}"
-  creation_statements = "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; GRANT ALTER, CREATE ON ${var.db_name} to '{{name}}'@'%'; grant CREATE,DROP,SELECT,INSERT,UPDATE,DELETE on ${var.db_name}.* to '{{name}}'@'%'; flush privileges"
+  creation_statements = "${file("${path.module}/vault_policy_templates/mysql_crud.sql")}"
   default_ttl         = "${var.default_ttl}"
   max_ttl             = "${var.max_ttl}"
 }
@@ -28,7 +37,7 @@ resource "vault_database_secret_backend_role" "mysql_ro" {
   backend             = "${vault_mount.db.path}"
   name                = "mysql_ro"
   db_name             = "${var.db_name}"
-  creation_statements = "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}'; grant SELECT on ${var.db_name}.* to '{{name}}'@'%'; flush privileges"
+  creation_statements = "${file("${path.module}/vault_policy_templates/mysql_ro.sql")}"
   default_ttl         = "${var.default_ttl}"
   max_ttl             = "${var.max_ttl}"
 }
