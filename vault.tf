@@ -5,17 +5,6 @@ resource "vault_mount" "db" {
   default_lease_ttl_seconds = "${var.default_ttl}"
 }
 
-data "template_file" "vault_backend_connection" {
-  template = "${file("${path.module}/vault_policy_templates/database_connection.json.tpl")}"
-
-  vars = {
-    db_endpoint = "${aws_db_instance.default.endpoint}"
-    db_name        = "${var.db_name}"
-    username       = "${random_string.username.result}"
-    password       = "${random_string.password.result}"
-  }
-}
-
 resource "vault_database_secret_backend_connection" "mysql" {
   backend       = "${vault_mount.db.path}"
   name          = "${var.db_name}"
