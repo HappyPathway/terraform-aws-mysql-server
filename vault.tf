@@ -24,11 +24,25 @@ resource "vault_database_secret_backend_connection" "mysql" {
   }
 }
 
+data "template_file" "mysql_crud" {
+  vars {
+    db_name = "${var.db_name}"
+  }
+  template = "${file("${path.module}/vault_policy_templates/mysql_crud.sql")}"
+}
+
+data "template_file" "mysql_ro" {
+  vars {
+    db_name = "${var.db_name}"
+  }
+  template = "${file("${path.module}/vault_policy_templates/mysql_ro.sql")}"
+}
+  
 resource "vault_database_secret_backend_role" "mysql_crud" {
   backend             = "${vault_mount.db.path}"
   name                = "mysql_crud"
   db_name             = "${var.db_name}"
-  creation_statements = "${file("${path.module}/vault_policy_templates/mysql_crud.sql")}"
+  creation_statements = "${data.template_file.mysql_crud.rendered}"
   default_ttl         = "${var.default_ttl}"
   max_ttl             = "${var.max_ttl}"
 }
@@ -37,7 +51,7 @@ resource "vault_database_secret_backend_role" "mysql_ro" {
   backend             = "${vault_mount.db.path}"
   name                = "mysql_ro"
   db_name             = "${var.db_name}"
-  creation_statements = "${file("${path.module}/vault_policy_templates/mysql_ro.sql")}"
+  creation_statements = "${data.template_file.mysql_ro.rendered}"
   default_ttl         = "${var.default_ttl}"
   max_ttl             = "${var.max_ttl}"
 }
