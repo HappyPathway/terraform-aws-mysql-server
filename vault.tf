@@ -20,7 +20,7 @@ resource "vault_database_secret_backend_connection" "mysql" {
   allowed_roles = ["mysql_crud", "mysql_ro"]
 
   mysql {
-    connection_url = "${local.db.user}:${local.db.passwd}@tcp(${local.db.host})/${local.db.db}"
+    connection_url = "${local.db["user"]}:${local.db["passwd"]}@tcp(${local.db["host"]})/${local.db["db"]}"
   }
 }
 
