@@ -1,5 +1,7 @@
+resource "random_uuid" "uuid" { }
+
 resource "aws_security_group" "db" {
-  name        = "allow_all"
+  name        = "allow_all-${var.service_name}-${random_uuid.uuid.result}"
   description = "Allow all inbound traffic"
 
   ingress {
@@ -15,4 +17,8 @@ resource "aws_security_group" "db" {
     protocol        = "-1"
     cidr_blocks     = ["0.0.0.0/0"]
   }
+}
+
+output "db_sec_group" {
+  value = "allow_all-${var.service_name}-${random_uuid.uuid.result}"
 }
