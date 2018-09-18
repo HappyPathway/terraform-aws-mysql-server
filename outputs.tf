@@ -3,7 +3,7 @@ output "endpoint" {
 }
 
 output "host" {
-  value = "${aws_db_instance.default.host}"
+  value = "${aws_db_instance.default.address}"
 }
 
 output "service_name" {
