@@ -4,6 +4,7 @@ resource "aws_db_instance" "default" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
+  identifier           = "${var.service_name}-${var.db_name}" 
   name                 = "${var.db_name}"
   username             = "${random_string.username.result}"
   password             = "${random_string.password.result}"
