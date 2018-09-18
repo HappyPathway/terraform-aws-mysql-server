@@ -23,5 +23,5 @@ output "db_name" {
 }
 
 output "db_identifier" {
-  value = "${aws_db_instance.default.identitifier}"
+  value = "${aws_db_instance.default.identifier}"
 }
